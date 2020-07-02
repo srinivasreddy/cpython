@@ -2450,7 +2450,9 @@ class PosixPathTest(_BasePathTest, unittest.TestCase):
                      "Bad file descriptor in /dev/fd affects only macOS")
     def test_handling_bad_descriptor(self):
         try:
-            file_descriptors = list(pathlib.Path('/dev/fd').rglob("*"))[3:]
+            import pdb; pdb.set_trace()
+            file_descriptors = list(pathlib.Path('/dev/fd').rglob("*"))
+            file_descriptors = file_descriptors[3:]
             if not file_descriptors:
                 self.skipTest("no file descriptors - issue was not reproduced")
             # Checking all file descriptors because there is no guarantee
