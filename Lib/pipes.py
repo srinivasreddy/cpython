@@ -153,7 +153,7 @@ class Template:
         """t.open_r(file) and t.open_w(file) implement
         t.open(file, 'r') and t.open(file, 'w') respectively."""
         if not self.steps:
-            return open(file, 'r')
+            return open(file, 'r', encoding='utf-8')
         if self.steps[-1][1] == SINK:
             raise ValueError('Template.open_r: pipeline ends width SINK')
         cmd = self.makepipeline(file, '')
@@ -161,7 +161,7 @@ class Template:
 
     def open_w(self, file):
         if not self.steps:
-            return open(file, 'w')
+            return open(file, 'w', encoding='utf-8')
         if self.steps[0][1] == SOURCE:
             raise ValueError('Template.open_w: pipeline begins with SOURCE')
         cmd = self.makepipeline('', file)

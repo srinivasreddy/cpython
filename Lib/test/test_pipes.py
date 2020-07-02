@@ -89,8 +89,7 @@ class SimplePipeTests(unittest.TestCase):
         t = pipes.Template()
         self.assertEqual(repr(t), "<Template instance, steps=[]>")
         t.append('tr a-z A-Z', pipes.STDIN_STDOUT)
-        self.assertEqual(repr(t),
-                    "<Template instance, steps=[('tr a-z A-Z', '--')]>")
+        self.assertEqual(repr(t), "<Template instance, steps=[('tr a-z A-Z', '--')]>")
 
     def testSetDebug(self):
         t = pipes.Template()
@@ -146,7 +145,6 @@ class SimplePipeTests(unittest.TestCase):
         self.assertRaises(ValueError, t.append, 'boguscmd',
                            pipes.STDIN_FILEOUT)
 
-
     def testBadPrependOptions(self):
         t = pipes.Template()
 
@@ -197,6 +195,7 @@ class SimplePipeTests(unittest.TestCase):
 def test_main():
     run_unittest(SimplePipeTests)
     reap_children()
+
 
 if __name__ == "__main__":
     test_main()
