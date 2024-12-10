@@ -1573,5 +1573,30 @@ class TestModuleAll(unittest.TestCase):
         check__all__(self, sax, extra=extra)
 
 
+class LocatorTestHandler(ContentHandler):
+    def __init__(self):
+        self.locator = None
+
+    def setDocumentLocator(self, locator):
+        self.locator = locator
+
+class ExpatLocatorTest(unittest.TestCase):
+    def test_locator_with_parse(self):
+        # Test full parse
+        handler = LocatorTestHandler()
+        parser = make_parser()
+        parser.setContentHandler(handler)
+        parser.parse(StringIO("<root/>"))
+        self.assertIsNotNone(handler.locator)
+
+    def test_locator_with_feed(self):
+        # Test incremental parse
+        handler = LocatorTestHandler()
+        parser = make_parser()
+        parser.setContentHandler(handler)
+        parser.feed("<root/>")
+        parser.close()
+        self.assertIsNotNone(handler.locator)  # This will currently fail
+
 if __name__ == "__main__":
     unittest.main()
