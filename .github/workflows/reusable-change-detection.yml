@@ -117,9 +117,7 @@ jobs:
           echo "run-cifuzz=false" >> "$GITHUB_OUTPUT"
         fi
 
-        # Get changed files
         CHANGED_FILES=$(git diff --name-only "origin/$GITHUB_BASE_REF..")
-
         # Check if changes are ONLY in configure/Makefile files
         if echo "$CHANGED_FILES" | grep -qE '^(configure.*|Makefile.*|.*\.m4)$' && \
             ! echo "$CHANGED_FILES" | grep -qvE '^(configure.*|Makefile.*|.*\.m4)$'; then
