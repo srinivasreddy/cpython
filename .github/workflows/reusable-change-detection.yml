@@ -117,23 +117,19 @@ jobs:
           echo "run-cifuzz=false" >> "$GITHUB_OUTPUT"
         fi
 
-        # Check if changes are Windows-specific
-        if [ -z "$GITHUB_BASE_REF" ]; then
-          echo "run-windows=true" >> "$GITHUB_OUTPUT"
-        else
-          # Get changed files
-          CHANGED_FILES=$(git diff --name-only "origin/$GITHUB_BASE_REF..")
+        # Get changed files
+        CHANGED_FILES=$(git diff --name-only "origin/$GITHUB_BASE_REF..")
 
-          # Check if changes are ONLY in configure/Makefile files
-          if echo "$CHANGED_FILES" | grep -qE '^(configure.*|Makefile.*|.*\.m4)$' && \
-             ! echo "$CHANGED_FILES" | grep -qvE '^(configure.*|Makefile.*|.*\.m4)$'; then
-            # Only configure/Makefile files changed, skip Windows CI
-            echo "run-windows=false" >> "$GITHUB_OUTPUT"
-          else
-            # Other files changed, run Windows CI
-            echo "run-windows=true" >> "$GITHUB_OUTPUT"
-          fi
+        # Check if changes are ONLY in configure/Makefile files
+        if echo "$CHANGED_FILES" | grep -qE '^(configure.*|Makefile.*|.*\.m4)$' && \
+            ! echo "$CHANGED_FILES" | grep -qvE '^(configure.*|Makefile.*|.*\.m4)$'; then
+          # Only configure/Makefile files changed, skip Windows CI
+          echo "run-windows=false" >> "$GITHUB_OUTPUT"
+        else
+          # Other files changed, run Windows CI
+          echo "run-windows=true" >> "$GITHUB_OUTPUT"
         fi
+
     - name: Compute hash for config cache key
       id: config-hash
       run: |
