@@ -39,7 +39,7 @@ on:  # yamllint disable-line rule:truthy
       run-windows:
         description: Whether to run the Windows CI
         value: >-  # bool
-          ${{ jobs.compute-changes.outputs.run-windows || false }}
+          ${{ jobs.compute-changes.outputs.run-windows || true }}
       run_hypothesis:
         description: Whether to run the Hypothesis tests
         value: >-  # bool
