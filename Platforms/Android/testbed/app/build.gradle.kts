@@ -49,24 +49,33 @@ if (prefixes.isEmpty()) {
     )
 }
 
+fun findPythonVersion(dir: File): String {
+    for (filename in dir.list()!!) {
+        """python(\d+\.\d+[a-z]*)""".toRegex().matchEntire(filename)?.let {
+            return it.groupValues[1]
+        }
+    }
+    throw GradleException("Failed to find Python version in $dir")
+}
+
 // Detect Python versions and ABIs.
+//
+// The lib directory is named after the version plus the free-threading flag (e.g.
+// "3.15t"), while the include directory and libpython are named after the version
+// plus all ABI flags (e.g. "3.15td" for a free-threaded debug build).
 lateinit var pythonVersion: String
+lateinit var pythonLdVersion: String
 var abis = HashMap<File, String>()
 for ((i, prefix) in prefixes.withIndex()) {
     val libDir = file("$prefix/lib")
-    val version = run {
-        for (filename in libDir.list()!!) {
-            """python(\d+\.\d+[a-z]*)""".toRegex().matchEntire(filename)?.let {
-                return@run it.groupValues[1]
-            }
-        }
-        throw GradleException("Failed to find Python version in $libDir")
-    }
+    val version = findPythonVersion(libDir)
+    val ldVersion = findPythonVersion(file("$prefix/include"))
     if (i == 0) {
         pythonVersion = version
-    } else if (pythonVersion != version) {
+        pythonLdVersion = ldVersion
+    } else if (pythonVersion != version || pythonLdVersion != ldVersion) {
         throw GradleException(
-            "${prefixes[0]} is Python $pythonVersion, but $prefix is Python $version"
+            "${prefixes[0]} is Python $pythonLdVersion, but $prefix is Python $ldVersion"
         )
     }
 
@@ -124,7 +133,7 @@ android {
             } else {
                 prefixes[0]
             },
-            "-DPYTHON_VERSION=$pythonVersion",
+            "-DPYTHON_LDVERSION=$pythonLdVersion",
             "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON",
         )
 
@@ -339,9 +348,9 @@ androidComponents.onVariants { variant ->
     generateTask(variant, variant.sources.assets!!) {
         into("python") {
             // Include files such as pyconfig.h are used by some of the tests.
-            into("include/$pyPlusVer") {
+            into("include/python$pythonLdVersion") {
                 for (prefix in prefixes) {
-                    from("$prefix/include/$pyPlusVer")
+                    from("$prefix/include/python$pythonLdVersion")
                 }
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             }

@@ -148,9 +148,12 @@ def android_env(host):
         prefix = subdir(host) / "prefix"
     else:
         prefix = ANDROID_DIR / "prefix"
-        sysconfig_files = prefix.glob("lib/python*/_sysconfigdata__android_*.py")
+        # The filename includes the ABI flags (e.g. "t" for free-threaded).
+        sysconfig_files = prefix.glob("lib/python*/_sysconfigdata_*_android_*.py")
         sysconfig_filename = next(sysconfig_files).name
-        host = re.fullmatch(r"_sysconfigdata__android_(.+).py", sysconfig_filename)[1]
+        host = re.fullmatch(
+            r"_sysconfigdata_[a-z]*_android_(.+).py", sysconfig_filename
+        )[1]
 
     env_output = subprocess.run(
         f"set -eu; "

@@ -7,8 +7,8 @@ string(
     PYTHON_PREFIX_DIR ${PYTHON_PREFIX_DIR}
 )
 
-include_directories(${PYTHON_PREFIX_DIR}/include/python${PYTHON_VERSION})
+include_directories(${PYTHON_PREFIX_DIR}/include/python${PYTHON_LDVERSION})
 link_directories(${PYTHON_PREFIX_DIR}/lib)
-link_libraries(log python${PYTHON_VERSION})
+link_libraries(log python${PYTHON_LDVERSION})
 
 add_library(main_activity SHARED main_activity.c)

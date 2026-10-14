@@ -76,6 +76,15 @@ call. For example, if you want a pydebug build that also caches the results from
 python3 Platforms/Android build HOST -- -C --with-pydebug
 ```
 
+Similarly, to make a free-threaded build, you can do:
+
+```sh
+python3 Platforms/Android build HOST -- --disable-gil
+```
+
+Each `cross-build/HOST` directory can only contain one build at a time, so when
+switching between ABIs, use the `--clean` option to delete the previous build.
+
 ## Packaging
 
 After building an architecture as described in the section above, you can

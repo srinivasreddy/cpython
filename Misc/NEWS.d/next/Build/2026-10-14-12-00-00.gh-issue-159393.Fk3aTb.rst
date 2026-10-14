@@ -1,0 +1,2 @@
+The Android build and test tooling now supports free-threaded and debug
+builds.
